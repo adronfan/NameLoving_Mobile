@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>爱情点名</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="css/ratchet.min.css" rel="stylesheet">
+    <!--    <link href="stylesheets/ratchet-theme-android.min.css" rel="stylesheet"> -->
+    <!--    <link href="stylesheets/ratchet-theme-ios.min.css" rel="stylesheet">
+-->
+    <link href="css/style.css">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="js/ratchet.min.js"></script>
+    <script src="js/push.js"></script>
+
+  <style> 
+  </style>
+  </head>
+  <body>
+
+<header class="bar bar-nav">
+  <h1 class="title">我要点你的名</h1>
+</header>
+<!-- 顶部49像素留白 -->
+<div style="height:49px">
+</div>
+
+<div class="content-padded">
+    <p><% if(!isLogin) {%><font style="color:red">请先登录！</font><br><%}%>请按照下面的步骤填写您的信息和表白语哦:）<br>为了让对方知道是您发出的求白，请保持信息真实哦</p>
+</div>
+
+<!-- 输入信息 -->
+<form class="input-group" id="form1" action="/postData" method="post">
+  <input type="text" id="myname" placeholder="先输入您的大名吧...">
+  <input type="text" id="hisname" placeholder="您的爱慕者是？">
+  <input type="text" id="myege" placeholder="您的年龄？">
+  <textarea rows="3" id="our" placeholder="一件共同经历的事（选填）"></textarea>
+  <textarea rows="8" id="myword" placeholder="写下你的表白语，开始求白吧(●––●)"></textarea>
+  <textarea rows="4" id="myself" placeholder="自我情况的一些说明吧,多多益善，少则遗憾哦"></textarea>
+  <button class="btn btn-positive btn-block" onclick="return postData()">提交表白</button>  
+</form> 
+
+<div style="height:100px; width:200px;background-color;">
+</div>
+
+<nav class="bar bar-tab">
+  <a class="tab-item active" href="#">
+    <span class="icon icon-plus"></span>
+    <span class="tab-label">点名</span>
+  </a>
+  <a class="tab-item" href="/search">
+    <span class="icon icon-search"></span>
+    <span class="tab-label">查询</span>
+  </a>
+  <a class="tab-item" href="/myHome">
+    <span class="icon icon-gear"></span>
+    <span class="tab-label">我的</span>
+  </a>
+</nav>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</body>
+</html>

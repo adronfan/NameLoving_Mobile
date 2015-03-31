@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>我的表白查询</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="css/ratchet.min.css" rel="stylesheet">
+    <link href="css/style.css">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="js/ratchet.min.js"></script>
+    <script src="js/push.js"></script>
+
+  <style type="text/css">
+
+  </style>
+  </head>
+  <body>
+
+<div id="searchForm" class="bar bar-standard">
+  <form>
+    <input style="width:80%;float:left;" id="search" type="search" placeholder="请输入您的真实姓名...">
+  </form>
+  
+  <!-- Button -->
+    <button onclick="return postData()" class="btn btn-negative" style="float:right;top:5%;right:0%;width:15%;height:90%;">
+      <span class="icon icon-search"></span>
+    </button>
+
+<script>
+    function postData() {
+        //function returnText() {
+        //    document.getElementById("tishiWord").style.hidden="false";
+        //    document.getElementById("whoislogin").style.display="block";
+        //    document.getElementById("whoislogin").innerHTML='"' + username + '"' + ' 账号已经登录';
+        //}
+        var searchName = $("#search").val();
+        $.ajax({
+            type:"POST",
+            url:"/searchName",
+            data:{searchName:searchName},
+            datatype:"json",
+            success:function(data) {
+              //alert("success");
+            },
+            //调用执行后调用的函数
+            complete: function(XMLHttpRequest, textStatus){
+                //alert();
+                if(XMLHttpRequest.responseText !== null) {
+                     document.getElementById("tishiWord").style.visibility="visible";
+                     var jsonSearchResault = JSON.parse(XMLHttpRequest.responseText);
+                     var htmlStr = "";
+                     for(var i = 0; i < jsonSearchResault.length; i++) {
+                        htmlStr = "";
+                        htmlStr = '<li class="table-view-cell media" onclick="clickList(' + i + ')"> <a class="navigate-right"> <div class="media-body">' + jsonSearchResault[i].myname + '<p>和你有过的曾近:</p> <p>' + jsonSearchResault[i].our + '</p> <p>他(她)的表白宣言:</p> <p>' + jsonSearchResault[i].myword + '</p> </div> </a> <p id="' + 'resultList' + i + '" style="display:none">' + jsonSearchResault[i].id + '</p> </li>'
+                        $("ul").append(htmlStr);
+                     }
+                 } else {
+                     alert("还没有人向你表白");
+                 }
+             },
+             error:function() {
+               //alert("ERROR");
+             }
+        });
+
+        return false;
+    }
+
+    function clickList(listNum) {
+        var listid = "resultList" + listNum;
+        var listIdValue = $("#" + listid).text();
+        var postForm = $('<form action="/detail" method="post" target="_blank"><input type="hidden" name="listId" value="' + listIdValue + '"/><form/>');
+        $('body').append(postForm);
+        postForm.submit();
+
+        return;
+        $.ajax({
+            type:"POST",
+            url:"/searchName",
+            data:{searchName:searchName},
+            datatype:"json",
+            success:function(data) {
+              //alert("success");
+            },
+            //调用执行后调用的函数
+            complete: function(XMLHttpRequest, textStatus){
+                //alert();
+                alert(XMLHttpRequest.responseText);
+                if(XMLHttpRequest.responseText !== null) {
+                     document.getElementById("tishiWord").style.visibility="visible";
+                     var jsonSearchResault = JSON.parse(XMLHttpRequest.responseText);
+                     var htmlStr = "";
+                     for(var i = 0; i < jsonSearchResault.length; i++) {
+                        htmlStr = "";
+                        htmlStr = '<li class="table-view-cell media" onclick="clickList( ' + i + ' )"> <a class="navigate-right"> <div class="media-body"> ' + jsonSearchResault[i].myname + ' <p>和你有过的曾近:</p> <p> ' + jsonSearchResault[i].our + ' </p> <p>他(她)的表白宣言:</p> <p> ' + jsonSearchResault[i].myword + ' </p> </div> </a> <p id=" ' + 'resultList' + i + ' " style="display:none"> ' + jsonSearchResault[i].id + ' </p> </li>'
+                        $("ul").append(htmlStr);
+                     }
+                 } else {
+                     alert("还没有人向你表白");
+                 }
+             },
+             error:function() {
+               //alert("ERROR");
+             }
+        });
+    }
+</script>
+
+</div>
+
+<div style="height:53px"></div>
+
+<p id="tishiWord" style="visibility:hidden">这些人曾今向你表白过，快看看有没有认识的？</p>
+
+<ul class="table-view">
+</ul>
+
+
+
+<div style="height:35px"></div>
+<nav class="bar bar-tab">
+  <a class="tab-item" href="/dianMing">
+    <span class="icon icon-plus"></span>
+    <span class="tab-label">点名</span>
+  </a>
+  <a class="tab-item active" href="#">
+    <span class="icon icon-search"></span>
+    <span class="tab-label">查询</span>
+  </a>
+  <a class="tab-item" href="/myHome">
+    <span class="icon icon-gear"></span>
+    <span class="tab-label">我的</span>
+  </a>
+</nav>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</body>
+</html>

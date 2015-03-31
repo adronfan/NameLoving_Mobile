@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>表白详细</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="css/ratchet.min.css" rel="stylesheet">
+    <link href="css/style.css">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="js/ratchet.min.js"></script>
+    <script src="js/push.js"></script>
+
+  <style type="text/css">
+  </style>
+  </head>
+  <body>
+
+<header class="bar bar-nav">
+    <h1 class="title"><%= listDetail.myname %> 的表白</h1>
+</header>
+<!-- 顶部49像素留白 -->
+<div style="height:49px">
+</div>
+
+
+<div class="content-padded">
+  <h2>姓名：<%= listDetail.myname %></h2>
+  <hr>
+  <h3>年龄：<%= listDetail.myege %></h3>
+  <hr>
+  <h4>共同经历的一件事：</h4>
+  <p><%= listDetail.our %></p>
+  <h4>他(她)的表白宣言：</h4>
+  <p><%= listDetail.myword %></p>
+  <h4>他(她)的自我介绍：</h4>
+  <p><%= listDetail.myself %></p>
+</div>
+
+<button class="btn btn-positive btn-block" onclick="showNext()">如果确定"<%= listDetail.myname %>"是向您表白请点击继续操作</button>
+
+<ul class="table-view" id="isAgree" style="visibility:hidden">
+  <li class="table-view-cell">
+    您接受对方的求白吗？
+    <div class="toggle" onclick="detailIsAgree()">
+      <div class="toggle-handle"></div>
+      <input type="text" style="display:none" id="detailIsAgree" value="0"></input> 
+    </div>
+  </li>
+</ul>
+
+<form id="form1" action="/agreeOrdisagree" method="post" style="visibility:hidden">
+    <textarea rows="3" name="sureForLover" placeholder="写下一件事，让他知道是您本人的操作..."></textarea>
+    <textarea rows="5" name="mywords" placeholder="(●––●) 还有什么话可以在这里说..."></textarea>
+    <input hidden = "hidden" name="listId" value="<%= listDetail.id %>"></input> 
+    <input hidden = "hidden" id="formIsAgree" name="formIsAgree" value="0"></input> 
+    <button class="btn btn-positive btn-block">点击把你的态度发送给“<%= listDetail.myname %>”吧</button>
+</form>
+
+<script>
+    function detailIsAgree() {
+        var num = document.getElementById("detailIsAgree").value;
+        if(parseInt(num) === 0) {
+            $(".toggle").addClass("active");
+            document.getElementById("detailIsAgree").value = "1";
+            document.getElementById("formIsAgree").value = "1";
+        } else {
+            $(".toggle").removeClass("active");
+            document.getElementById("detailIsAgree").value = "0";
+            document.getElementById("formIsAgree").value = "0";
+        }
+    }
+
+    function showNext() {
+        document.getElementById("isAgree").style.visibility="visible";
+        document.getElementById("form1").style.visibility="visible";
+    }
+</script>
+
+<div style="height:94px"></div>
+<nav class="bar bar-tab">
+  <a class="tab-item" href="/dianMing">
+    <span class="icon icon-plus"></span>
+    <span class="tab-label">点名</span>
+  </a>
+  <a class="tab-item active" href="/search">
+    <span class="icon icon-search"></span>
+    <span class="tab-label">查询</span>
+  </a>
+  <a class="tab-item" href="/myHome">
+    <span class="icon icon-gear"></span>
+    <span class="tab-label">我的</span>
+  </a>
+</nav>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</body>
+</html>

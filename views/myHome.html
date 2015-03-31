@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>我的主页</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="assets/i/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+  
+  <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.2.1/css/amazeui.min.css">
+  
+  
+    
+
+    <!-- Sets initial viewport load and disables zooming  
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+-->
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="css/ratchet.min.css" rel="stylesheet">
+    <link href="css/style.css">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="js/ratchet.min.js"></script>
+    <script src="js/push.js"></script>
+
+  <style type="text/css">
+      .segmented-control {
+          margin-top:10px;
+      }
+      #myHome1 {
+          
+      }
+      #myHome2 {
+          display:none;
+      }
+      #myHome3 {
+          display:none;
+      }
+ </style>
+
+<script>
+    function clickTab(value) {
+        var home1 = document.getElementById("myHome1");
+        var home2 = document.getElementById("myHome2");
+        var home3 = document.getElementById("myHome3");
+        switch(value) {
+            case 1:
+                {
+                    home1.style.display="block";
+                    home2.style.display="none";
+                    home3.style.display="none";
+                    $("#controlItem1").addClass("active");
+                    $("#controlItem2").removeClass("active");
+                    $("#controlItem3").removeClass("active");
+                }
+                break;
+            case 2:
+                {
+                    home1.style.display="none";
+                    home2.style.display="block";
+                    home3.style.display="none";
+                    $("#controlItem1").removeClass("active");
+                    $("#controlItem2").addClass("active");
+                    $("#controlItem3").removeClass("active");
+                }
+                break;
+            case 3:
+                {
+                    home1.style.display="none";
+                    home2.style.display="none";
+                    home3.style.display="block";
+                    $("#controlItem1").removeClass("active");
+                    $("#controlItem2").removeClass("active");
+                    $("#controlItem3").addClass("active");
+                }
+                break;
+        }
+    }
+</script>
+
+  </head>
+  <body>
+
+<div class="segmented-control">
+  <p class="control-item active" id="controlItem1" onclick="clickTab(1)">我的主页</p>
+  <p class="control-item" id="controlItem2" onclick="clickTab(2)">表白记录</p>
+  <p class="control-item" id="controlItem3" onclick="clickTab(3)">关于我们</p>
+</div>
+
+<div id="myHome1" style="display:block;">
+    <ul class="table-view">
+      <li class="table-view-cell">
+        <a class="navigate-right">
+            <span class="badge" id="badgeBack"><%= detailDate.allComment %></span>
+          我的回复
+        </a>
+      </li>
+      <li class="table-view-cell">
+          <span class="badge" id="badgeSee"><%= detailDate.allSee %></span>
+          被浏览数
+      </li>
+    </ul>
+    <hr>
+    <% if(isLogin !== null) { %>
+    <p id="whoislogin">"<%= isLogin %>" 账号已经登录</p>
+    <%} else { %>
+    <p id="whoislogin" style=""></p>
+    <!-- 注册和登录 -->
+<form class="input-group" id="loginForm">
+  <input type="text" id="username" placeholder="您的手机号或者QQ号或者Email">
+  <input type="text" id="password" placeholder="输入不低于6位数的密码">
+  <button style="float:left;width:40%;margin:15px;height:33px;" class="btn btn-positive" onclick="return regist('login')">登录</button>
+  <button style="float:right;width:40%;margin:15px;height:33px;" class="btn btn-negative" onclick="return regist('regist')">注册</button>
+</form>
+    <% } %>
+<script>
+    function regist(value) {
+        function returnText() {
+            document.getElementById("loginForm").style.display="none";
+            document.getElementById("whoislogin").style.display="block";
+            document.getElementById("whoislogin").innerHTML='"' + username + '"' + ' 账号已经登录';
+        }
+        var username = $("#username").val();
+        var password = $("#password").val();
+        switch(value) {
+            case 'login':
+                {
+                    $.ajax({
+                      type:"POST",
+                      url:"/login",
+                      data:{name:username,password:password},
+                      datatype:"json",
+                      success:function(data) {
+                      },
+                       //调用执行后调用的函数
+                      complete: function(XMLHttpRequest, textStatus){
+                        var jsonSearchResault = JSON.parse(XMLHttpRequest.responseText);
+                        if(jsonSearchResault !== null) {
+                            returnText();
+                            $("#badgeBack").text(jsonSearchResault["allComment"]);
+                            $("#badgeSee").text(jsonSearchResault["allSee"]);
+
+                            var htmlStr = "";
+                            var usersPostsArr = jsonSearchResault["usersPostsArr"];
+                            for(var i = 0; i < usersPostsArr.length; i++) {
+                               htmlStr = "";
+                               htmlStr = '<li class="table-view-cell media" onclick="clickList(' + "'" + usersPostsArr[i].id + "'" + ')"> <a class="navigate-right"> <div class="media-body"> ' + usersPostsArr[i].hisname + '<p>' + usersPostsArr[i].myword + '</p> </div> </a> </li>';
+                               $("#myBiaoBaiList").append(htmlStr);
+                            }
+                        } else {
+                            alert("对不起，您的用户名和密码不匹配，请重新输入！");
+                        }
+                      },
+                      error:function() {
+                      }
+                    });
+
+                }
+                break;
+            case 'regist':
+                {
+                    $.ajax({
+                      type:"POST",
+                      url:"/regist",
+                      data:{name:username,password:password},
+                      datatype:"text",
+                      success:function(data) {
+                      },
+                       //调用执行后调用的函数
+                      complete: function(XMLHttpRequest, textStatus){
+                        if(XMLHttpRequest.responseText === "OK") {
+                            returnText();
+                        } else {
+                            alert("对不起，您的用户名已经被使用！");
+                        }
+                      },
+                      error:function() {
+                      }
+                    });
+                }
+                break;
+        }
+        return false;
+    }
+</script>
+</div>
+<div id="myHome2" style="display:none;">
+    <% if(usersPostsArr.length <= 0.1) { %>
+    <p>现在还没有数据哦，快去表白吧</p>
+    <% } %>
+<ul class="table-view" id="myBiaoBaiList">
+        <% for (var i = 0; i < usersPostsArr.length; i++) { %>
+        <li class="table-view-cell media" onclick="clickList('<%= usersPostsArr[i].id %>')">
+    <a class="navigate-right">
+      <div class="media-body">
+          <%= usersPostsArr[i].hisname %>
+        <p><%= usersPostsArr[i].myword %></p>
+      </div>
+    </a>
+  </li>
+        <% } %>
+</ul>
+</div>
+
+<script> 
+    function clickList(listId) {
+        var postForm = $('<form action="/detail" method="post" target="_blank"><input type="hidden" name="listId" value="' + listId + '"/><form/>');
+        $('body').append(postForm);
+        postForm.submit();
+    }
+</script>
+
+
+<div id="myHome3" style="display:none;">
+    <div style="height:20px"></div>
+
+    <h4>隐私申明</h4>
+    <p>本网站及工作人员会全力保护您的个人隐私及必要的安全服务。在我们能力的范围内，请您放心使用。如因您个人原因导致信息泄露后果，责任我们将不予承担。如果您继续使用，表示您已经同意上面的申明。</p>
+    <hr>
+    <h4>关于我们</h4>
+    <p>我们小组的成员，每到过年过节的时候，就止不住的烦心，因为那一件恐怖的事情会神迹的到来！对，相亲！烦心烦力，大好的青年，有喜欢的人因为种种原因没有勇气去表白，蹉跎的岁月不停止的流！于是，我们通过“点名表白”这个简单的想法，直接输入爱慕者的名字进行表白，如果对方碰巧能够看到，那真是太好不过的事情了...</p>
+    <hr>
+    <p>最熟悉的朋友，最难以成为伴侣。<br>害怕失败之后不再联络的恐慌。<br>抛弃世俗的鲜花和蜡烛，<br>不在面对面拒绝后的难堪，<br>这里写下你的表白，<br>她不经意间的查看，<br>效果可能会更好。<br>我点了你的名,<br>如果真爱本就该在一起。<br></p>
+</div>
+
+<div style="height:95px"></div>
+<nav class="bar bar-tab">
+  <a class="tab-item" href="/dianMing">
+    <span class="icon icon-plus"></span>
+    <span class="tab-label">点名</span>
+  </a>
+  <a class="tab-item" href="/search">
+    <span class="icon icon-search"></span>
+    <span class="tab-label">查询</span>
+  </a>
+  <a class="tab-item active" href="#">
+    <span class="icon icon-gear"></span>
+    <span class="tab-label">我的</span>
+  </a>
+</nav>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="http://cdn.amazeui.org/amazeui/2.2.1/js/amazeui.min.js"></script>
+</body>
+</html>
